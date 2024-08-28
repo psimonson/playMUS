@@ -3,25 +3,26 @@
 #include <stdlib.h>
 #include <string.h>
 
-void generate_guitar_wave(float* buffer, uint32_t length, float frequency, uint8_t* adsr) {
-    float delay = 1.0f / frequency;
-    float decay = exp(-1.0f / (delay * length));
-    float prev = 0.0f;
-
-    for (uint32_t i = 0; i < length; ++i) {
-        float current = ((float)rand() / (float)RAND_MAX - 0.5f) + decay * prev;
-        buffer[i] = current;
-        prev = current;
+void generate_sine_wave(float *buffer, uint32_t length, Note* note) {
+    for (size_t i = 0; i < length; i++) {
+        buffer[i] = sin(2 * M_PI * note->frequency * i / 44100.0f);
     }
-    apply_adsr(buffer, length, adsr);
+    apply_adsr(buffer, length, note->adsr);
 }
 
-void generate_square_wave(float* buffer, uint32_t length, float frequency, uint8_t* adsr) {
-    float period = 44100.0f / frequency;
+void generate_drum_sound(float *buffer, uint32_t length, Note* note) {
+    for (size_t i = 0; i < length; i++) {
+        buffer[i] = (exp(-((double)i / (length / 10))) * sin(2 * M_PI * note->frequency * i / 44100.0f));
+    }
+    apply_adsr(buffer, length, note->adsr);
+}
+
+void generate_square_wave(float* buffer, uint32_t length, Note *note) {
+	float period = 44100.0f / note->frequency;
     for (uint32_t i = 0; i < length; ++i) {
         buffer[i] = (fmodf((float)i, period) < period / 2) ? 1.0f : -1.0f;
     }
-    apply_adsr(buffer, length, adsr);
+    apply_adsr(buffer, length, note->adsr);
 }
 
 void apply_adsr(float* buffer, uint32_t length, uint8_t* adsr) {

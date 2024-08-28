@@ -40,7 +40,7 @@ MusicFile* create_complex_song() {
     for (uint32_t i = 0; i < guitar_track->note_count; i++) {
         guitar_track->notes[i] = (Note){
             .start_time_ms = i * 6000,
-            .frequency = 440.0f + i * 10,
+            .frequency = 440.0f + i * 5,
             .duration_ms = 2000,
             .adsr = {10, 200, 50, 100},
             .amplitude = 0.8f,
@@ -125,12 +125,12 @@ void play_music(MusicFile* music) {
 
             switch (track->instrument) {
                 case INSTRUMENT_GUITAR:
-                    generate_guitar_wave(buffer, length, note->frequency, note->adsr);
+                    generate_sine_wave(buffer, length, note);
                     break;
-                case INSTRUMENT_SNARE_DRUM:
                 case INSTRUMENT_BASS_DRUM:
-                    generate_square_wave(buffer, length, note->frequency, note->adsr);
-                    break;
+                case INSTRUMENT_SNARE_DRUM:
+					generate_drum_sound(buffer, length, note);
+					break;
             }
 
             pan_audio(buffer, length, note->panning);
