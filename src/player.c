@@ -39,9 +39,9 @@ MusicFile* create_complex_song() {
     // Add notes to guitar track
     for (uint32_t i = 0; i < guitar_track->note_count; i++) {
         guitar_track->notes[i] = (Note){
-            .start_time_ms = i * 6000,
-            .frequency = 440.0f + i * 5,
-            .duration_ms = 2000,
+            .start_time_ms = i * 3000,
+            .frequency = 320.0f + i * 2,
+            .duration_ms = 1000,
             .adsr = {10, 200, 50, 100},
             .amplitude = 0.8f,
             .panning = 128
